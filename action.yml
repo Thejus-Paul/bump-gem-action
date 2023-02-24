@@ -1,0 +1,13 @@
+name: 'Bump Gem'
+description: 'The GitHub action to bump the gem or engine version.'
+author: 'Thejus Paul'
+inputs:
+  labels:
+    description: 'Provide a comma separated list of labels passed to the PR for the version bump.'
+    required: true
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
+branding:
+  icon: 'chevrons-up'
+  color: 'gray-dark'

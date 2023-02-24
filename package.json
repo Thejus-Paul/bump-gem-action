@@ -1,0 +1,19 @@
+{
+  "name": "bump-gem-action",
+  "version": "1.0.0",
+  "description": "The GitHub action to bump the gem or engine version.",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm exec ncc build index.js"
+  },
+  "keywords": [],
+  "author": "Thejus Paul",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "1.10.0",
+    "@actions/exec": "1.1.1"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "0.36.1"
+  }
+}
