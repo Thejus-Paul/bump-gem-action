@@ -1,5 +1,6 @@
 const core = require("@actions/core");
 const exec = require("@actions/exec");
+const github = require("@actions/github");
 
 const BUMP_TYPES = ["major", "minor", "patch"];
 
@@ -11,6 +12,32 @@ const containsBumpTypeLabel = (labels) => {
   }
 
   return BUMP_TYPES.some((bump_type) => labelsArray.includes(bump_type));
+};
+
+const createBranch = async (octokit, context, branch) => {
+  // Sometimes branch might come in with refs/heads already
+  branch = branch.replace("refs/heads/", "");
+  const reference = `refs/heads/${branch}`;
+
+  // throws HttpError if branch already exists.
+  try {
+    await octokit.rest.repos.getBranch({
+      ...context.repo,
+      branch,
+    });
+  } catch (error) {
+    if (error.name === "HttpError" && error.status === 404) {
+      const response = await octokit.rest.git.createRef({
+        ref: reference,
+        sha: context.sha,
+        ...context.repo,
+      });
+
+      return response?.data?.ref === reference;
+    } else {
+      throw Error(error);
+    }
+  }
 };
 
 const run = async () => {
@@ -36,6 +63,17 @@ const run = async () => {
 
     console.log("\nAfter bump, the gem version is:");
     await exec.exec("bump_gem_version current");
+
+    console.log("\nCommitting and pushing the new version...");
+    const token = core.getInput("token");
+    const branch = core.getInput("branch");
+    const context = github.context;
+    const octokit = github.getOctokit(token);
+
+    core.debug(`Creating branch ${branch}`);
+    const isCreated = await createBranch(octokit, context, branch);
+
+    core.setOutput("created", Boolean(isCreated));
   } catch (error) {
     core.setFailed(error.message);
   }
