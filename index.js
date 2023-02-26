@@ -14,8 +14,6 @@ const containsBumpTypeLabel = (labels) => {
 };
 
 const createBranch = async (octokit, context, branch) => {
-  // Sometimes branch might come in with refs/heads already
-  branch = branch.replace("refs/heads/", "");
   const reference = `refs/heads/${branch}`;
 
   // throws HttpError if branch already exists.
@@ -40,14 +38,14 @@ const createBranch = async (octokit, context, branch) => {
 };
 
 const deleteBranch = async (octokit, context, branch) => {
-  branch = branch.replace("ref/heads/", "");
-  const reference = `refs/heads/${branch}`;
+  const reference = `heads/${branch}`;
 
   try {
-    return await octokit.rest.git.deleteRef({
+    const response = await octokit.rest.git.deleteRef({
       ref: reference,
       ...context.repo,
     });
+    return response;
   } catch (error) {
     core.setFailed(error.message);
   }
