@@ -1,5 +1,7 @@
 # bump-gem-action
 
+[![DeepScan grade](https://deepscan.io/api/teams/20541/projects/23984/branches/733494/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=20541&pid=23984&bid=733494)
+
 The GitHub action to bump the gem or engine version from the pull request labels.
 
 ## Inputs
@@ -8,6 +10,10 @@ The GitHub action to bump the gem or engine version from the pull request labels
 
 **Required** The labels of the pull request separated by comma.
 
+### `token`
+
+**Required** The GitHub token to authenticate with GitHub API.
+
 ## Example usage
 
 ```yaml
@@ -15,6 +21,7 @@ The GitHub action to bump the gem or engine version from the pull request labels
     uses: Thejus-Paul/bump-gem-action@main
     with:
       labels: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+      token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ## Local development
