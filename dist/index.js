@@ -11219,6 +11219,26 @@ const createPR = async (octokit, context, branchName) => {
   }
 };
 
+const createOrReplaceBranch = async (octokit, context, branchName) => {
+  try {
+    core.debug(`Creating branch ${branchName}`);
+    let isBranchCreated = await createBranch(octokit, context, branchName);
+
+    core.debug("Branch created:", Boolean(isBranchCreated));
+    if (!Boolean(isBranchCreated)) {
+      core.debug("Deleting the existing branch...");
+      const isBranchDeleted = await deleteBranch(octokit, context, branchName);
+      core.debug("Branch deleted:", Boolean(isBranchDeleted));
+
+      core.debug(`Creating a new branch ${branchName}`);
+      isBranchCreated = await createBranch(octokit, context, branchName);
+      core.debug("Branch created:", Boolean(isBranchCreated));
+    }
+  } catch (error) {
+    core.setFailed(error.message);
+  }
+};
+
 const mergePR = async (octokit, context, prNumber) => {
   try {
     const response = await octokit.rest.pulls.merge({
@@ -11270,19 +11290,8 @@ const run = async () => {
     const branchName = core.getInput("branch");
     const context = github.context;
 
-    core.debug(`Creating branch ${branchName}`);
-    let isBranchCreated = await createBranch(octokit, context, branchName);
-
-    core.debug("Branch created:", Boolean(isBranchCreated));
-    if (!Boolean(isBranchCreated)) {
-      core.debug("Deleting the existing branch...");
-      const isBranchDeleted = await deleteBranch(octokit, context, branchName);
-      core.debug("Branch deleted:", Boolean(isBranchDeleted));
-
-      core.debug(`Creating a new branch ${branchName}`);
-      isBranchCreated = await createBranch(octokit, context, branchName);
-      core.debug("Branch created:", Boolean(isBranchCreated));
-    }
+    core.debug("Creating or Replacing branch...");
+    await createOrReplaceBranch(octokit, context, branchName);
 
     core.debug("Creating a commit...");
     await createCommit(octokit, context, branchName);
