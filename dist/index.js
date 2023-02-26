@@ -11106,40 +11106,70 @@ const createBranch = async (octokit, context, branch) => {
   }
 };
 
+const deleteBranch = async (octokit, context, branch) => {
+  branch = branch.replace("ref/heads/", "");
+  const reference = `refs/heads/${branch}`;
+
+  try {
+    return await octokit.rest.git.deleteRef({
+      ref: reference,
+      ...context.repo,
+    });
+  } catch (error) {
+    core.setFailed(error.message);
+  }
+};
+
 const run = async () => {
   try {
     const labels = core.getInput("labels");
 
     if (!labels || !containsBumpTypeLabel(labels)) {
-      throw new Error(
+      core.error(
         "No bump type label (major, minor, or patch) was found in the PR."
       );
     }
 
-    core.debug("\nInstalling the gem...");
-    await exec.exec("gem install -q --silent bump_gem_version");
+    if (core.isDebug()) {
+      core.debug("Installing the gem...");
+      await exec.exec("gem install bump_gem_version");
+    } else {
+      await exec.exec("gem install -q --silent bump_gem_version");
+    }
 
-    core.debug("\nBefore bump, the gem version was:");
-    await exec.exec("bump_gem_version current");
+    if (core.isDebug()) {
+      core.debug("Before bump, the gem version was:");
+      await exec.exec("bump_gem_version current");
+    }
 
-    core.debug("\nBumping gem version...");
+    core.debug("Bumping gem version...");
     await exec.exec(`bump_gem_version labels ${labels}`);
 
-    core.debug("\nSuccessfully bumped gem version! 🎉");
+    core.info("Successfully bumped gem version! 🎉");
 
-    core.debug("\nAfter bump, the gem version is:");
-    await exec.exec("bump_gem_version current");
+    if (core.isDebug()) {
+      core.debug("After bump, the gem version is:");
+      await exec.exec("bump_gem_version current");
+    }
 
-    core.debug("\nCommitting and pushing the new version...");
+    core.info("Committing and pushing the new version...");
     const token = core.getInput("token");
     const octokit = github.getOctokit(token);
     const branch = core.getInput("branch");
     const context = github.context;
 
     core.debug(`Creating branch ${branch}`);
-    const isCreated = await createBranch(octokit, context, branch);
+    let isCreated = await createBranch(octokit, context, branch);
 
-    console.log("created", isCreated);
+    console.log("Branch created:", Boolean(isCreated));
+    if (!Boolean(isCreated)) {
+      console.log("Deleting the existing branch...");
+      const isDeleted = await deleteBranch(octokit, context, branch);
+      console.log("Branch deleted:", Boolean(isDeleted));
+      console.log(`Creating a new branch ${branch}`);
+      isCreated = await createBranch(octokit, context, branch);
+      console.log("Branch created:", Boolean(isCreated));
+    }
   } catch (error) {
     core.setFailed(error.message);
   }
