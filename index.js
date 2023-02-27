@@ -76,6 +76,8 @@ const getChangedFiles = async (changedFiles) => {
 };
 
 const createCommit = async (octokit, context, branchName) => {
+  const commitMessage = core.getInput("commit_message");
+
   try {
     const branch = await octokit.rest.repos.getBranch({
       ...context.repo,
@@ -112,7 +114,7 @@ const createCommit = async (octokit, context, branchName) => {
       ...context.repo,
       tree: commitableFiles,
       base_tree: commitSHA,
-      message: "Bumped gem version",
+      message: commitMessage,
       parents: [commitSHA],
     });
 
@@ -121,7 +123,7 @@ const createCommit = async (octokit, context, branchName) => {
     } = await octokit.rest.git.createCommit({
       ...context.repo,
       tree: currentTreeSHA,
-      message: "Bumped gem version",
+      message: commitMessage,
       parents: [commitSHA],
     });
 
@@ -138,12 +140,15 @@ const createCommit = async (octokit, context, branchName) => {
 };
 
 const createPR = async (octokit, context, branchName) => {
+  const title = core.getInput("pr_title");
+  const body = core.getInput("pr_body");
+
   try {
     const response = await octokit.rest.pulls.create({
-      head: branchName,
       base: "main",
-      title: "Bump gem version",
-      body: "Bump gem version",
+      body,
+      head: branchName,
+      title,
       ...context.repo,
     });
     return response?.data?.number;
