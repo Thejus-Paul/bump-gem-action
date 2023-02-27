@@ -20,7 +20,7 @@ The GitHub action to bump the gem or engine version from the pull request labels
 
 ## `commit_message`
 
-**Optional** The commit message to use. Default `"Bumped gem version"`.
+**Optional** The commit message to use. Default `"Updated gem version"`.
 
 ## `pr_title`
 
