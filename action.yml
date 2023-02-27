@@ -13,6 +13,18 @@ inputs:
     description: 'Provide a branch name to be used for the PR.'
     required: false
     default: 'bump-gem-version'
+  commit_message: 
+    description: 'Provide a commit message for the gem version bump.'
+    required: false
+    default: 'Updated gem version'
+  pr_title:
+    description: 'Provide a title for the PR.'
+    required: false
+    default: 'Updated gem version'
+  pr_body:
+    description: 'Provide a body for the PR.'
+    required: false
+    default: 'New version release'
 runs:
   using: 'node16'
   main: 'dist/index.js'
