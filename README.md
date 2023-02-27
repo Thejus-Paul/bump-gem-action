@@ -14,19 +14,19 @@ The GitHub action to bump the gem or engine version from the pull request labels
 
 **Required** The GitHub token to authenticate with GitHub API.
 
-## `branch`
+### `branch`
 
 **Optional** The branch to push the changes to. Default `"bump-gem-version"`.
 
-## `commit_message`
+### `commit_message`
 
 **Optional** The commit message to use. Default `"Updated gem version"`.
 
-## `pr_title`
+### `pr_title`
 
 **Optional** The pull request title to use. Default `"Updated gem version"`.
 
-## `pr_body`
+### `pr_body`
 
 **Optional** The pull request body to use. Default `"New version release"`.
 
