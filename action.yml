@@ -9,10 +9,14 @@ inputs:
   token:
     description: 'Provide a GitHub token for branch creation and PR creation.'
     required: true
-  branch:
-    description: 'Provide a branch name to be used for the PR.'
+  new_branch:
+    description: 'Provide a branch name to be used for the version bump PR.'
     required: false
     default: 'bump-gem-version'
+  base_branch:
+    description: 'Provide a base branch name to be used for the PR.'
+    required: false
+    default: 'main'
   commit_message: 
     description: 'Provide a commit message for the gem version bump.'
     required: false
