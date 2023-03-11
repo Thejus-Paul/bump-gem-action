@@ -49,7 +49,7 @@ The GitHub action to bump the gem or engine version from the pull request labels
 1. Install the dependencies
 
     ```bash
-    npm install
+    pnpm install
     ```
 
 2. Make the necessary changes to `action.yml` and/or `index.js`.
@@ -57,7 +57,7 @@ The GitHub action to bump the gem or engine version from the pull request labels
 3. Compile the `index.js` with the dependencies into a single file.
 
     ```bash
-    npm run build
+    pnpm run build
     ```
 
 4. Commit the changes and push to the branch.
