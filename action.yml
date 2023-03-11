@@ -29,6 +29,9 @@ inputs:
     description: 'Provide a body for the PR.'
     required: false
     default: 'New version release'
+  default_bump_label:
+    description: 'Provide a default bump label for cases when labels does not include a bump type label'
+    required: false
 runs:
   using: 'node16'
   main: 'dist/index.js'

@@ -34,6 +34,10 @@ The GitHub action to bump the gem or engine version from the pull request labels
 
 **Optional** The pull request body to use. Default `"New version release"`.
 
+### `default_bump_label`
+
+**Optional** Provide a default bump label for cases when labels does not include a bump type label.
+
 ## Example usage
 
 ```yaml

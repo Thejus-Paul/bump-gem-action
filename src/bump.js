@@ -1,23 +1,32 @@
 const core = require("@actions/core");
 const exec = require("@actions/exec");
 
-const containsBumpTypeLabel = (labels) => {
+const getLabels = (labels, defaultBumpLabel) => {
   const bumpTypes = ["major", "minor", "patch"];
   const labelsArray = labels.split(",");
+  const isDefaultBumpLabelPresent = bumpTypes.some(
+    (bumpType) => bumpType === defaultBumpLabel
+  );
+  const isBumpTypePresent = bumpTypes.some((bumpType) =>
+    labelsArray.includes(bumpType)
+  );
 
-  if (labelsArray.length === 0 || labelsArray[0] === "") {
-    return false;
+  if (isBumpTypePresent) {
+    return labels;
+  } else {
+    return isDefaultBumpLabelPresent ? defaultBumpLabel : false;
   }
-
-  return bumpTypes.some((bumpType) => labelsArray.includes(bumpType));
 };
 
 const bumpGem = async () => {
   const labels = core.getInput("labels");
+  const defaultBumpLabel = core.getInput("default_bump_label");
 
-  if (!labels || !containsBumpTypeLabel(labels)) {
-    core.error(
-      "No bump type label (major, minor, or patch) was found in the PR."
+  const prLabels = getLabels(labels, defaultBumpLabel);
+
+  if (!Boolean(prLabels)) {
+    core.setFailed(
+      "No bump type label (major, minor, or patch) or default bump label was found in the PR."
     );
   }
 
@@ -35,7 +44,7 @@ const bumpGem = async () => {
     }
 
     core.debug("Bumping gem version...");
-    await exec.exec(`bump_gem_version labels ${labels}`);
+    await exec.exec(`bump_gem_version labels ${prLabels}`);
 
     core.info("Successfully bumped gem version! 🎉");
 
