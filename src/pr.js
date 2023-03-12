@@ -13,7 +13,14 @@ const create = async (octokit, context, branchName) => {
       title,
       ...context.repo,
     });
-    return response?.data?.number;
+
+    await octokit.rest.issues.addLabels({
+      ...context.repo,
+      issue_number: response.data.number,
+      labels: ["skip-version-bump"],
+    });
+
+    return response.data.number;
   } catch (error) {
     core.setFailed(error.message);
   }
