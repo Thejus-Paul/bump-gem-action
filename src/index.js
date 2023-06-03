@@ -27,8 +27,6 @@ const run = async () => {
     const prNumber = await pr.create(octokit, context, branchName);
 
     core.debug("PR created:", Boolean(prNumber));
-    core.debug("Merging PR...");
-    await pr.merge(octokit, context, prNumber);
   } catch (error) {
     core.setFailed(error.message);
   }
