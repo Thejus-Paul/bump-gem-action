@@ -1,6 +1,9 @@
-name: 'Bump Gem'
+name: 'Bump Product Version'
 description: 'The GitHub action to bump the gem or engine version.'
 author: 'Thejus Paul'
+outputs:
+  version:
+    description: "Version of package"
 inputs:
   labels:
     description: 'Provide a comma separated list of labels passed to the PR for the version bump.'
@@ -12,7 +15,7 @@ inputs:
   new_branch:
     description: 'Provide a branch name to be used for the version bump PR.'
     required: false
-    default: 'bump-gem-version'
+    default: 'bump-product-version'
   base_branch:
     description: 'Provide a base branch name to be used for the PR.'
     required: false
@@ -20,11 +23,11 @@ inputs:
   commit_message: 
     description: 'Provide a commit message for the gem version bump.'
     required: false
-    default: 'Updated gem version'
+    default: 'Updated product version'
   pr_title:
     description: 'Provide a title for the PR.'
     required: false
-    default: 'Updated gem version'
+    default: 'Updated product version'
   pr_body:
     description: 'Provide a body for the PR.'
     required: false
@@ -32,6 +35,12 @@ inputs:
   default_bump_label:
     description: 'Provide a default bump label for cases when labels does not include a bump type label'
     required: false
+  path:
+    description: 'Path of package.json'
+    default: "./"
+  node-version-file:
+    description: 'File containing the version Spec of the version to use.  Examples: .nvmrc, .node-version, .tool-versions.'
+    default: "./nvmrc"
 runs:
   using: 'node16'
   main: 'dist/index.js'
