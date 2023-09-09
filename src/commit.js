@@ -33,6 +33,7 @@ const create = async (octokit, context, branchName) => {
       ...context.repo,
       branch: branchName,
     });
+    core.debug(`Get branch response: ${JSON.stringify(branch)}`);
 
     const branchSha = branch.data.commit.sha;
 
@@ -55,8 +56,10 @@ const create = async (octokit, context, branchName) => {
       },
     };
     await exec.exec("git", ["status", "-s"], gitOptions);
+    core.debug(`Changed files: ${JSON.stringify(changedFiles)}`);
 
     const commitableFiles = await getChangedFiles(changedFiles);
+    core.debug(`Commitable files: ${JSON.stringify(commitableFiles)}`);
 
     const {
       data: { sha: currentTreeSHA },
@@ -67,6 +70,7 @@ const create = async (octokit, context, branchName) => {
       message: commitMessage,
       parents: [commitSHA],
     });
+    core.debug(`Current tree SHA: ${JSON.stringify(currentTreeSHA)}`);
 
     const {
       data: { sha: newCommitSHA },
@@ -76,6 +80,7 @@ const create = async (octokit, context, branchName) => {
       message: commitMessage,
       parents: [commitSHA],
     });
+    core.debug(`New commit SHA: ${JSON.stringify(newCommitSHA)}`);
 
     await octokit.rest.git.updateRef({
       ...context.repo,
