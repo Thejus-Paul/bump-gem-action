@@ -44,15 +44,13 @@ const createOrReplace = async (octokit, context, branchName) => {
     let isBranchCreated = await create(octokit, context, branchName);
 
     core.debug(`Branch created: ${Boolean(isBranchCreated)}`);
-    if (!Boolean(isBranchCreated)) {
-      core.debug("Deleting the existing branch...");
-      const isBranchDeleted = await destroy(octokit, context, branchName);
-      core.debug(`Branch deleted: ${Boolean(isBranchDeleted)}`);
+    core.debug("Deleting the existing branch...");
+    const isBranchDeleted = await destroy(octokit, context, branchName);
+    core.debug(`Branch deleted: ${Boolean(isBranchDeleted)}`);
 
-      core.debug(`Creating a new branch ${branchName}`);
-      isBranchCreated = await create(octokit, context, branchName);
-      core.debug(`Branch created: ${Boolean(isBranchCreated)}`);
-    }
+    core.debug(`Creating a new branch ${branchName}`);
+    isBranchCreated = await create(octokit, context, branchName);
+    core.debug(`Branch created: ${Boolean(isBranchCreated)}`);
   } catch (error) {
     core.setFailed(error.message);
   }
