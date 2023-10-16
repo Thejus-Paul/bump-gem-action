@@ -20,11 +20,11 @@ inputs:
   commit_message: 
     description: 'Provide a commit message for the gem version bump.'
     required: false
-    default: 'Updated gem version'
+    default: 'Updated product version'
   pr_title:
     description: 'Provide a title for the PR.'
     required: false
-    default: 'Updated gem version'
+    default: 'Updated product version'
   pr_body:
     description: 'Provide a body for the PR.'
     required: false
@@ -32,6 +32,15 @@ inputs:
   default_bump_label:
     description: 'Provide a default bump label for cases when labels does not include a bump type label'
     required: false
+  path:
+    description: 'Path of package.json'
+    default: "./"
+  node-version-file:
+    description: 'File containing the version Spec of the version to use.  Examples: .nvmrc, .node-version, .tool-versions.'
+    default: "./nvmrc"
+outputs:
+  version:
+    description: "Version of package"
 runs:
   using: 'node16'
   main: 'dist/index.js'

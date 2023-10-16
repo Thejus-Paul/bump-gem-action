@@ -1,7 +1,9 @@
 const core = require("@actions/core");
+const exec = require("@actions/exec");
 const github = require("@actions/github");
 
 const bumpGem = require("./bump");
+const packageRelease = require("./packageRelease")
 const branch = require("./branch");
 const commit = require("./commit");
 const pr = require("./pr");
@@ -10,8 +12,15 @@ const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
 
 const run = async () => {
   try {
-    core.info("Bumping gem version...");
-    await bumpGem();
+    const labels = core.getInput("labels").split(",");
+    if(labels.includes("backend")) {
+      await bumpGem();
+    }
+
+    if(labels.includes("frontend")) {
+      core.info("Bumping frontend version...");
+      await packageRelease(labels);     
+    }
 
     core.info("Committing and pushing the new version...");
     const token = core.getInput("token");
