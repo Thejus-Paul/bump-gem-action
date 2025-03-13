@@ -47,6 +47,20 @@ The GitHub action to bump the gem or engine version from the pull request labels
     default_bump_label: patch
 ```
 
+### `bump_version_pr_labels`
+
+**Optional** Provide a comma separated list of labels passed to the bump version PR.
+
+```yaml
+- name: Bump gem version
+  uses: Thejus-Paul/bump-gem-action@main
+  with:
+    labels: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+    token: ${{ secrets.GITHUB_TOKEN }}
+    default_bump_label: patch
+    bump_version_pr_labels: mergepr
+```
+
 ## Example usage
 
 ```yaml
@@ -59,7 +73,7 @@ The GitHub action to bump the gem or engine version from the pull request labels
 
 ## Local development
 
-1. Install the dependencies
+1. Install the dependencies.
 
     ```bash
     pnpm install

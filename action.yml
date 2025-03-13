@@ -32,6 +32,9 @@ inputs:
   default_bump_label:
     description: 'Provide a default bump label for cases when labels does not include a bump type label'
     required: false
+  bump_version_pr_labels:
+    description: 'Provide a comma separated list of labels passed to the bump version PR.'
+    required: false
 runs:
   using: 'node16'
   main: 'dist/index.js'
